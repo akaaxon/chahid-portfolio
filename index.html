@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chahid | Interior Design Portfolio</title>
+    <meta name="description" content="Portfolio of Chahid — Interior Design student. Spatial planning, 3D visualization, and concept development.">
+    <meta name="theme-color" content="#F2EFE9">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Playfair Display for elegant editorial headers, Inter for technical details -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           DESIGN TOKENS — ARCHITECTURAL EDITORIAL
+           ============================================================ */
+        :root {
+            /* Colors: Bone, Charcoal, Muted Olive */
+            --bg-page:      #F2EFE9; /* Bone White / Drafting Paper */
+            --bg-alt:       #E8E4DB; /* Slightly darker tone */
+            --bg-dark:      #1C1B1A; /* Deep Charcoal */
+            
+            --ink-main:     #1C1B1A; 
+            --ink-muted:    #5A5753; 
+            
+            --accent-brand: #6A7059; /* Muted Olive/Sage Green */
+            --accent-light: #D4D8CA; /* Faint green for backgrounds */
+
+            /* Borders: Sharp & Technical */
+            --line-thin:    1px solid #D6D2CB;
+            --line-thick:   2px solid var(--ink-main);
+            
+            /* Typography */
+            --font-serif:   'Playfair Display', serif;
+            --font-sans:    'Inter', sans-serif;
+
+            --fs-display:   clamp(3.5rem, 8vw, 7rem);
+            --fs-h2:        clamp(2.5rem, 5vw, 4rem);
+            --fs-h3:        clamp(1.2rem, 2vw, 1.8rem);
+            --fs-body:      1.05rem;
+            --fs-sm:        0.85rem;
+
+            --nav-h:        80px;
+            --dur:          0.4s;
+            --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ============================================================
+           GLOBAL RESET
+           ============================================================ */
+        *, *::before, *::after { box-sizing: border-box; }
+        * { margin: 0; padding: 0; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--nav-h);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            font-size: var(--fs-body);
+            line-height: 1.6;
+            color: var(--ink-main);
+            background-color: var(--bg-page);
+            overflow-x: hidden;
+            /* Architectural drafting grid background */
+            background-image: 
+                linear-gradient(var(--line-thin) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-thin) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center top;
+        }
+
+        /* Sharp edges everywhere - No basic rounded corners */
+        img, video { max-width: 100%; display: block; border-radius: 0; }
+        ul { list-style: none; }
+        a { color: inherit; text-decoration: none; }
+
+        ::selection { background: var(--ink-main); color: var(--bg-page); }
+
+        /* ============================================================
+           TYPOGRAPHY PRIMITIVES
+           ============================================================ */
+        h1, h2, h3, .serif {
+            font-family: var(--font-serif);
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .technical-label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--ink-muted);
+        }
+
+        .tech-pill {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.4rem 0.8rem;
+            border: var(--line-thick);
+            background: var(--bg-page);
+            color: var(--ink-main);
+        }
+
+        /* ============================================================
+           LAYOUT SHELL
+           ============================================================ */
+        .wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        /* Crosshair decorations */
+        .crosshair {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            pointer-events: none;
+        }
+        .crosshair::before, .crosshair::after {
+            content: ''; position: absolute; background: var(--ink-main);
+        }
+        .crosshair::before { width: 100%; height: 1px; top: 7px; left: 0; }
+        .crosshair::after { height: 100%; width: 1px; top: 0; left: 7px; }
+
+        .section {
+            padding: 8rem 0;
+            position: relative;
+            border-bottom: var(--line-thin);
+            background: var(--bg-page); /* Covers the grid beneath text */
+        }
+        
+        .section--dark {
+            background: var(--bg-dark);
+            color: var(--bg-page);
+            border-bottom: none;
+        }
+        .section--dark h2, .section--dark h3 { color: var(--bg-page); }
+        .section--dark .technical-label { color: #A09D98; }
+
+        .section-header {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 5rem;
+            align-items: end;
+        }
+        .section-header h2 {
+            font-size: var(--fs-h2);
+            text-transform: uppercase;
+        }
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--ink-muted);
+            max-width: 600px;
+        }
+
+        /* ============================================================
+           NAVBAR (Industrial Menu)
+           ============================================================ */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            height: var(--nav-h);
+            background: var(--bg-page);
+            border-bottom: var(--line-thick);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav__inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .brand {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-style: italic;
+            font-weight: 600;
+            color: var(--ink-main);
+        }
+
+        .nav__links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav__link {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-main);
+            position: relative;
+        }
+        .nav__link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0; width: 100%; height: 1px;
+            background: var(--accent-brand);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--dur) var(--ease);
+        }
+        .nav__link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .nav__toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ============================================================
+           HERO (Asymmetrical Editorial)
+           ============================================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: var(--nav-h);
+            position: relative;
+        }
+
+        .hero__grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 0;
+            border: var(--line-thick);
+            background: var(--bg-page);
+            position: relative;
+        }
+
+        .hero__content {
+            padding: 4rem;
+            border-right: var(--line-thick);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero__content h1 {
+            font-size: var(--fs-display);
+            margin: 1.5rem 0;
+        }
+        .hero__content h1 em {
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--accent-brand);
+            display: block;
+        }
+
+        .hero__meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: var(--line-thin);
+            padding-bottom: 1rem;
+        }
+
+        .hero__desc {
+            font-size: 1.1rem;
+            color: var(--ink-muted);
+            margin-bottom: 3rem;
+            max-width: 90%;
+        }
+
+        /* Image Box - Offset architectural styling */
+        .hero__image-box {
+            position: relative;
+            padding: 2rem;
+            background: var(--bg-alt);
+        }
+        .hero__image-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: var(--line-thick);
+            overflow: hidden;
+        }
+        .hero__image-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 1s var(--ease);
+        }
+        .hero__image-box:hover .hero__image-inner img {
+            transform: scale(1.05);
+        }
+
+        /* Decorative vertical text */
+        .vert-text {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--ink-muted);
+            text-transform: uppercase;
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: var(--line-thick);
+            background: var(--ink-main);
+            color: var(--bg-page);
+            cursor: pointer;
+            transition: all var(--dur) var(--ease);
+            width: max-content;
+        }
+        .btn:hover {
+            background: var(--accent-brand);
+            border-color: var(--accent-brand);
+            color: #FFF;
+        }
+
+        /* ============================================================
+           SKILLS (Strict Technical Grid)
+           ============================================================ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: var(--line-thick);
+            border-left: var(--line-thick);
+        }
+
+        .skill-group {
+            border-right: var(--line-thick);
+            border-bottom: var(--line-thick);
+            background: var(--bg-page);
+            padding: 3rem 2rem;
+            transition: background var(--dur) var(--ease);
+        }
+        .skill-group:hover {
+            background: var(--bg-alt);
+        }
+        .skill-group h3 {
+            font-size: 1.5rem;
+            margin: 1rem 0 2rem;
+        }
+
+        .skill-list li {
+            border-top: var(--line-thin);
+            padding: 0.8rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .skill-list li strong { font-weight: 600; }
+
+        /* ============================================================
+           MEDIA / ARTIFACTS
+           ============================================================ */
+        .media-layout {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+            border: var(--line-thick);
+            padding: 2rem;
+            background: var(--bg-page);
+        }
+
+        .piece {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .piece--video { grid-column: 1 / -1; margin-bottom: 2rem; }
+        .piece--tall { grid-column: span 6; }
+
+        .piece__frame {
+            border: var(--line-thick);
+            padding: 1rem;
+            background: var(--bg-alt);
+            position: relative;
+        }
+
+        .door-arch--wide {
+            width: 100%;
+            aspect-ratio: 16 / 9; 
+            border: var(--line-thick);
+            overflow: hidden;
+        }
+        .door-arch--wide video { width: 100%; height: 100%; object-fit: cover; }
+
+        .door-arch--tall {
+            width: 100%;
+            border: var(--line-thick);
+            overflow: hidden;
+            background: var(--bg-page);
+        }
+        .door-arch--tall img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease);
+        }
+        .piece:hover .door-arch--tall img { transform: scale(1.03); }
+
+        .piece__caption {
+            padding: 1.5rem 0 0 0;
+        }
+        .piece__caption h3 {
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+        }
+        .piece__caption p {
+            font-size: 0.95rem;
+            color: var(--ink-muted);
+        }
+
+        /* ============================================================
+           REFLECTION & EDUCATION (SPLIT)
+           ============================================================ */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .prose-editorial h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .prose-editorial p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+
+        .edu-item {
+            border-top: var(--line-thick);
+            padding: 1.5rem 0;
+        }
+        .edu-item:last-child { border-bottom: var(--line-thick); }
+        .edu-item h3 { font-family: var(--font-sans); font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .edu-item span { font-size: 0.85rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 1rem; }
+        
+        .plan-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        .plan-list li::before {
+            content: "+";
+            position: absolute;
+            left: 0;
+            color: var(--accent-brand);
+            font-weight: bold;
+        }
+
+        /* ============================================================
+           CREDENTIALS (TABLE LIST)
+           ============================================================ */
+        .cred-table {
+            border-top: var(--line-thick);
+        }
+        .cred-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr auto;
+            align-items: center;
+            padding: 2rem 0;
+            border-bottom: var(--line-thin);
+            transition: padding var(--dur) var(--ease);
+        }
+        .cred-row:hover {
+            padding-left: 1rem;
+            background: var(--bg-alt);
+        }
+        .cred-row h3 { font-family: var(--font-sans); font-size: 1.2rem; font-weight: 600; margin: 0; }
+        .cred-row p { color: var(--ink-muted); }
+        .cred-icon {
+            width: 40px; height: 40px;
+            border: var(--line-thick);
+            display: grid; place-items: center;
+            border-radius: 50%;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            padding: 6rem 0 2rem;
+            background: var(--bg-page);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+            border-top: var(--line-thick);
+            padding-top: 4rem;
+        }
+        .footer h2 {
+            font-size: var(--fs-h2);
+            margin-bottom: 1rem;
+        }
+        .footer-mail {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--accent-brand);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 4px;
+        }
+
+        .footer h3 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            color: var(--ink-muted);
+        }
+        .footer ul { display: grid; gap: 0.75rem; }
+        .footer ul a {
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+        .footer ul a:hover { color: var(--accent-brand); }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 2rem;
+            border-top: var(--line-thin);
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+        }
+
+        /* ============================================================
+           ANIMATIONS
+           ============================================================ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+        }
+        .reveal.is-in { opacity: 1; transform: none; }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 1024px) {
+            .hero__grid { grid-template-columns: 1fr; }
+            /* Explicitly requested: Image first on mobile */
+            .hero__image-box { order: -1; }
+            .hero__content { border-right: none; border-top: var(--line-thick); padding: 3rem 2rem; }
+            
+            .skills-grid { grid-template-columns: 1fr; border-left: none; }
+            .skill-group { border-left: var(--line-thick); border-right: var(--line-thick); }
+            
+            .section-header { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 3rem; }
+            
+            .split-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-main { grid-column: 1 / -1; }
+            .media-layout { grid-template-columns: 1fr; padding: 1rem; }
+            .piece--tall { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 768px) {
+            .nav__links {
+                display: none;
+                position: absolute;
+                top: 100%; left: 0; width: 100%;
+                background: var(--bg-page);
+                border-bottom: var(--line-thick);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+            .nav__links.is-open { display: flex; }
+            .nav__toggle { display: block; }
+            .cred-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem 0; }
+            .cred-icon { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="nav" id="nav">
+        <div class="wrapper nav__inner">
+            <a class="brand" href="#top">Chahid.</a>
+            <button class="nav__toggle" id="navToggle">MENU</button>
+            <nav aria-label="Main Sections">
+                <ul class="nav__links" id="navLinks">
+                    <li><a class="nav__link" href="#about">Overview</a></li>
+                    <li><a class="nav__link" href="#skills">Expertise</a></li>
+                    <li><a class="nav__link" href="#reflection">Synthesis</a></li>
+                    <li><a class="nav__link" href="#artifacts">Deliverables</a></li>
+                    <li><a class="nav__link" href="#education">Background</a></li>
+                    <li><a class="nav__link" href="#credentials">Documents</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="section hero" id="about">
+        <div class="crosshair" style="top: 10%; left: 5%;"></div>
+        <div class="crosshair" style="bottom: 10%; right: 5%;"></div>
+        
+        <div class="wrapper">
+            <div class="hero__grid">
+                <div class="hero__content reveal">
+                    <span class="technical-label">Interior Design Student &middot; BAU</span>
+                    <h1>Designing <em>Spaces</em><br>Crafting Experiences</h1>
+                    
+                    <div class="hero__meta">
+                        <span class="technical-label">Exp. Grad: May 2027</span>
+                        <span class="technical-label">Beirut, Lebanon</span>
+                    </div>
+
+                    <p class="hero__desc">
+                        Passionate Interior Design student with an eye for detail, spatial awareness, and sustainable materials. Strong skills in drafting, 3D modeling, and translating client needs into functional, aesthetic environments. Dedicated to crafting spaces where every detail tells a story and every experience is felt, not just seen.
+                    </p>
+
+                    <div class="hero__actions">
+                        <a href="./assets/Chahed El Assi.jpeg" target="_blank" class="btn">
+                            View CV Document &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero__image-box reveal">
+                    <span class="vert-text">VOL. 01 — PORTFOLIO</span>
+                    <div class="hero__image-inner">
+                        <img src="./assets/pfp.jpeg" alt="Chahid Profile" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'500\'><rect width=\'100%\' height=\'100%\' fill=\'%23D4D8CA\'/><text x=\'50%\' y=\'50%\' font-family=\'serif\' font-size=\'20\' font-style=\'italic\' fill=\'%231C1B1A\' text-anchor=\'middle\'>Chahid Profile Image</text></svg>'">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SKILLS ================= -->
+    <section class="section" id="skills">
+        <div class="wrapper">
+            <div class="section-header reveal">
+                <div>
+                    <span class="technical-label">01 // Expertise</span>
+                    <h2>Core Competencies</h2>
+                </div>
+                <p>A rigorous foundation of technical software proficiency paired with essential creative and structural design skills.</p>
+            </div>
+
+            <div class="skills-grid reveal">
+                <!-- Technical Skills -->
+                <div class="skill-group">
+                    <span class="tech-pill">Module 1</span>
+                    <h3>Technical Software</h3>
+                    <ul class="skill-list">
+                        <li><strong>AutoCAD</strong><span>Drafting & Plans</span></li>
+                        <li><strong>3ds Max</strong><span>Advanced Rendering</span></li>
+                        <li><strong>Google SketchUp</strong><span>3D Modeling</span></li>
+                        <li><strong>Adobe Photoshop</strong><span>Post-Production</span></li>
+                        <li><strong>Adobe Premiere</strong><span>Video Editing</span></li>
+                    </ul>
+                </div>
+
+                <!-- Design & Creativity -->
+                <div class="skill-group">
+                    <span class="tech-pill">Module 2</span>
+                    <h3>Design & Creativity</h3>
+                    <ul class="skill-list">
+                        <li><strong>Concept Development</strong><span>Ideation</span></li>
+                        <li><strong>Spatial Planning</strong><span>Layouts</span></li>
+                        <li><strong>Material Selection</strong><span>Finishes</span></li>
+                        <li><strong>Mood Boards</strong><span>Aesthetic Direction</span></li>
+                        <li><strong>Hand Sketching</strong><span>Drafting</span></li>
+                    </ul>
+                </div>
+
+                <!-- Languages / Soft Skills -->
+                <div class="skill-group">
+                    <span class="tech-pill">Module 3</span>
+                    <h3>Comm & Soft Skills</h3>
+                    <ul class="skill-list">
+                        <li><strong>English</strong><span>Fluent</span></li>
+                        <li><strong>Arabic</strong><span>Fluent</span></li>
+                        <li><strong>Client Presentation</strong><span>Delivery</span></li>
+                        <li><strong>Project Coordination</strong><span>Management</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= MEDIA / ARTIFACTS / VIDEO ================= -->
+    <section class="section section--dark" id="artifacts">
+        <div class="wrapper">
+            <div class="section-header reveal">
+                <div>
+                    <span class="technical-label">02 // Deliverables</span>
+                    <h2>Project Artifacts & Visuals</h2>
+                </div>
+                <p>A curated selection of technical outputs, rendering walkthroughs, and spatial organization blueprints.</p>
+            </div>
+
+            <div class="media-layout">
+                
+                <!-- Video -->
+                <div class="piece piece--video reveal">
+                    <div class="piece__frame">
+                        <div class="door-arch--wide">
+                            <video controls preload="metadata">
+                                <source src="./assets/eiI9QWz9.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                    <div class="piece__caption">
+                        <span class="tech-pill" style="background: var(--accent-brand); color: #fff; border-color: var(--accent-brand);">Video Walkthrough</span>
+                        <h3>Space Visualization Demonstration</h3>
+                        <p>Interactive video case study demonstrating 3D rendering flow, presentation skills, and professional interactions in an interior design context.</p>
+                    </div>
+                </div>
+
+                <!-- Artifact 1 -->
+                <div class="piece piece--tall reveal">
+                    <div class="piece__frame">
+                        <div class="door-arch--tall">
+                            <img src="./assets/WhatsApp Image 2026-08-19 at 13.29.32.jpeg" alt="Learning Style Infographic">
+                        </div>
+                    </div>
+                    <div class="piece__caption">
+                        <span class="technical-label">Figure A.</span>
+                        <h3>Concept & Material Organization</h3>
+                        <p>An infographic detailing my approach to understanding concepts through visual diagrams, color-coding, and detailed material selection. Combining visual materials helps me stay organized and prepare confidently for clients.</p>
+                    </div>
+                </div>
+
+                <!-- Artifact 2 -->
+                <div class="piece piece--tall reveal">
+                    <div class="piece__frame">
+                        <div class="door-arch--tall">
+                            <img src="./assets/WhatsApp Image 2026-08-19 at 13.29.17.jpeg" alt="Communication Strip">
+                        </div>
+                    </div>
+                    <div class="piece__caption">
+                        <span class="technical-label">Figure B.</span>
+                        <h3>Future Design Blueprint</h3>
+                        <p>Visual layout of my future structural plan and spatial organization strategy.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= REFLECTION & EDUCATION SPLIT ================= -->
+    <section class="section" id="reflection">
+        <div class="wrapper">
+            <div class="split-grid">
+                
+                <!-- Reflection -->
+                <div class="reveal">
+                    <span class="eyebrow">Synthesis</span>
+                    <div class="prose-editorial">
+                        <h3>Translating Concepts to Built Environments</h3>
+                        <p>Through my studies in Interior Design, I have gained foundational knowledge of spatial geometry, human ergonomics, and environmental psychology. I am highly organized and motivated to apply this understanding to real-world residential and commercial spaces.</p>
+                        <p>I believe that participating in active design studios and practical exposure allows me to refine my technical drafting skills while understanding the logistical challenges of construction and material sourcing in the field.</p>
+                    </div>
+                </div>
+
+                <!-- Education & Plan -->
+                <div class="reveal" id="education">
+                    <span class="eyebrow">Background & Road Map</span>
+                    
+                    <div class="edu-item">
+                        <h3>BA in Interior Design</h3>
+                        <span>Beirut Arab University &middot; Exp. May 2027</span>
+                        <p style="font-size: 0.95rem; color: var(--ink-muted);">Core focus on 3D visualization, drafting, and sustainable materials.</p>
+                    </div>
+
+                    <div class="edu-item">
+                        <h3>Life Humanities Baccalaureate</h3>
+                        <span>High School &middot; Graduated 2024</span>
+                    </div>
+
+                    <div class="edu-item">
+                        <h3>Professional Goals</h3>
+                        <span>Post-Graduation Roadmap</span>
+                        <ul class="plan-list">
+                            <li>Improve advanced 3D rendering skills (V-Ray/Enscape).</li>
+                            <li>Gain practical experience through studio internships.</li>
+                            <li>Build professional network attending local design exhibitions.</li>
+                            <li>Develop technical drafting speed and refine client presentations.</li>
+                        </ul>
+                    </div>
+
+                       <div class="edu-item">
+                        <h3>Professional Experience</h3>
+                        <span>Tafseel Group for aluminum Bchamoun, Lebanon (June 2026 - August 2026)</span>
+                        <ul class="plan-list">
+                            <li>Supported the team on aluminum based interior from concept through facade detailing</li>
+                            <li>Assisted with drawing materials and coordination between design and function. </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CREDENTIALS ================= -->
+    <section class="section" id="credentials">
+        <div class="wrapper">
+            <div class="section-header reveal">
+                <div>
+                    <span class="technical-label">03 // Documents</span>
+                    <h2>Verified Credentials</h2>
+                </div>
+            </div>
+
+            <div class="cred-table reveal">
+                
+                <a href="./assets/Chahed El Assi.jpeg" target="_blank" class="cred-row">
+                    <h3>Curriculum Vitae</h3>
+                    <p>View complete PDF document</p>
+                    <div class="cred-icon">&rarr;</div>
+                </a>
+
+                <a href="./assets/Cover letter.docx" target="_blank" class="cred-row">
+                    <h3>Cover Letter</h3>
+                    <p>Application Draft</p>
+                    <div class="cred-icon">&rarr;</div>
+                </a>
+
+                <a href="https://www.linkedin.com/in/chahed-el-assi-75b31b36a" target="_blank" class="cred-row">
+                    <h3>LinkedIn</h3>
+                    <p>Professional Portfolio & Network</p>
+                    <div class="cred-icon">&rarr;</div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="wrapper">
+            <div class="footer-grid">
+                <div class="footer-main">
+                    <h2>Let's design together.</h2>
+                    <p style="margin-bottom: 2rem; color: var(--ink-muted); max-width: 400px;">Eager to apply my academic knowledge and develop my skills in spatial planning, 3D visualization, and interior design.</p>
+                    <a href="mailto:chahid@example.com" class="footer-mail">Contact Me</a>
+                </div>
+
+                <div>
+                    <h3>Index</h3>
+                    <ul>
+                        <li><a href="#about">Overview</a></li>
+                        <li><a href="#skills">Competencies</a></li>
+                        <li><a href="#reflection">Synthesis</a></li>
+                        <li><a href="#artifacts">Artifacts</a></li>
+                        <li><a href="#education">Education & Plan</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Direct Links</h3>
+                    <ul>
+                        <li><a href="./assets/Chahed El Assi.jpeg" target="_blank">View Resume</a></li>
+                        <li><a href="./assets/Cover letter.docx" target="_blank">Cover Letter</a></li>
+                        <li>Phone: +961 76000000</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <span>&copy; <span id="year">2026</span> Chahid &middot; Interior Design Student, Beirut Arab University.</span>
+                <a href="#top" style="color: var(--ink-muted); font-weight: 600;">Back to top &uarr;</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+        // Update Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Nav Toggle
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            links.classList.toggle('is-open');
+        });
+        links.addEventListener('click', () => {
+            links.classList.remove('is-open');
+        });
+
+        // Scroll Reveal
+        const revealables = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        revealables.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
